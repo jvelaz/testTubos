@@ -1,8 +1,9 @@
 import org.jetbrains.compose.compose
 
 plugins {
-    kotlin("multiplatform") version "1.5.31"
-    id("org.jetbrains.compose") version "1.0.0"
+    kotlin("multiplatform") version "1.6.10"
+    id("org.jetbrains.compose") version "1.1.0-rc01"
+    //id("kotlin2js") version "1.6.20-M1"
 }
 
 group = "me.jose"
@@ -40,4 +41,10 @@ kotlin {
             }
         }
     }
+}
+
+
+
+dependencies {
+    //implementation(kotlin("stdlib-js"))
 }
