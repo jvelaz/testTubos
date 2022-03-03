@@ -1,7 +1,10 @@
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import org.jetbrains.compose.web.css.*
+import org.jetbrains.compose.web.css.Color.black
+import org.jetbrains.compose.web.css.Color.blue
+import org.jetbrains.compose.web.css.Color.green
+import org.jetbrains.compose.web.css.Color.orange
+import org.jetbrains.compose.web.css.Color.purple
+import org.jetbrains.compose.web.css.Color.red
 import org.jetbrains.compose.web.dom.*
 import org.jetbrains.compose.web.renderComposable
 
@@ -23,6 +26,8 @@ enum class colours (val id: Int) {
     PURPLE(4)
 }
 
+var colorMap : MutableMap <colours,CSSColorValue> = mutableMapOf()
+
 val MAXITEMSPERCOLOUR = 4 //how many items in each colour
 val MAXITEMSPERCOLUMN = 4 //how many items in each column (tube)
 
@@ -30,22 +35,28 @@ val MAXCOLOURS=colours.values().size
 val MAXCOLUMNS = MAXCOLOURS * MAXITEMSPERCOLOUR / MAXITEMSPERCOLUMN //the columns
 
 fun main() {
+    colorMap[colours.ORANGE] = orange
+    colorMap[colours.GREEN] = green
+    colorMap[colours.RED] = red
+    colorMap[colours.BLUE] = blue
+    colorMap[colours.PURPLE] = purple
 
     var remaining:MutableMap<colours,Int> = mutableMapOf<colours, Int>()
-    var finalConstruct : MutableList<MutableList<colours>> = mutableListOf()
+    var finalLabelConstruct : MutableList<MutableList<colours>> = mutableListOf()
 
     initialize(remaining)
 
     for (i in 0 until MAXCOLUMNS){
         var column :MutableList<colours> = buildColumn(remaining)
-        finalConstruct.add(column)
+        finalLabelConstruct.add(column)
     }
 
-    finalConstruct.forEach{
+    finalLabelConstruct.forEach{
         print("${it}\n")
     }
 
-    var count: Int by mutableStateOf(0)
+    //var count: Int by mutableStateOf(0)
+
     renderComposable(rootElementId = "root") {
         /*Div({ style { padding(25.px) } }) {
             Button(attrs = {
@@ -65,15 +76,34 @@ fun main() {
             }
         }*/
 
-        Table({style{   border(3.px)
-                        padding(5.px)
-                        width(5.px)
+        Table({style{   padding(5.px)
+                        border{width(1.px)
+                                style(LineStyle.Solid)
+                                color(black)}
                     }   }){
             Tbody {
-                Tr {
-                    Td{Text("Lane1")}
-                    Td{Text("Lane2")}
-                    Td{Text("Lane3")}
+                for (i in 0 until MAXITEMSPERCOLUMN) {
+                    Tr ({style {
+                        padding(5.px)
+                        border{width(1.px)
+                        style(LineStyle.Solid)
+                        color(black)}
+                        }}){
+                        for (j in 0 until MAXCOLUMNS) {
+                            var colorLabel:colours = finalLabelConstruct[j][i]
+                            var colorCSS = colorMap[colorLabel]
+                            Td ({style {
+                                padding(5.px)
+                                border{width(1.px)
+                                style(LineStyle.Solid)
+                                color(black)}
+                                if (colorCSS != null) {
+                                    backgroundColor(colorCSS)
+                                }
+                                }})
+                                { Text (finalLabelConstruct[j][i].toString())}
+                        }
+                    }
                 }
             }
         }
