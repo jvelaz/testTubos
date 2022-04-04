@@ -1,13 +1,12 @@
-package tubeGenerator
 
-import org.jetbrains.compose.web.css.CSSColorValue
-import org.jetbrains.compose.web.css.Color.blue
-import org.jetbrains.compose.web.css.Color.green
-import org.jetbrains.compose.web.css.Color.lightpink
-import org.jetbrains.compose.web.css.Color.orange
-import org.jetbrains.compose.web.css.Color.purple
-import org.jetbrains.compose.web.css.Color.red
+import csstype.NamedColor
+import org.w3c.dom.HTMLOptionsCollection
+import org.w3c.dom.HTMLSelectElement
+import org.w3c.dom.get
 
+//import org.w3c.dom.*
+private val MAXITEMSPERCOLOUR = 4 //how many items in each colour
+private val MAXITEMSPERCOLUMN = 4 //how many items in each column (tube)
 
 enum class Colours (val id: Int) {
     ORANGE(0),
@@ -18,13 +17,13 @@ enum class Colours (val id: Int) {
     PINK(5)
 }
 
-var colorMap : MutableMap <Colours, CSSColorValue> = mutableMapOf(
-Colours.ORANGE to orange,
-Colours.GREEN to green,
-Colours.RED to red,
-Colours.BLUE to blue,
-Colours.PURPLE to purple,
-Colours.PINK to lightpink
+var colorMap : MutableMap <Colours, NamedColor> = mutableMapOf(
+Colours.ORANGE to NamedColor.orange,
+Colours.GREEN to NamedColor.green,
+Colours.RED to NamedColor.red,
+Colours.BLUE to NamedColor.blue,
+Colours.PURPLE to NamedColor.purple,
+Colours.PINK to NamedColor.lightpink
 )
 
 fun initialize (remaining : MutableMap<Colours,Int>){
@@ -69,4 +68,17 @@ fun buildColumn (remaining : MutableMap<Colours,Int>)  : MutableList<Colours>{
     }
 
     return column
+}
+
+fun getSelectValues (select : HTMLSelectElement) :MutableList<String>{
+    var result:MutableList<String> = mutableListOf()
+    var options: HTMLOptionsCollection = select.options
+
+    for (i in 0 until options.length){
+        var opts= options[i]?.getAttribute("selected")
+        if (opts != null) {
+            result.add(opts)
+        }
+    }
+    return result
 }
